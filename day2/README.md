@@ -54,5 +54,9 @@ aks-agentpool-18505526-vmss000001   Ready    agent   79m   v1.26.6
 
 <img src="reg.png">
 
+### ANY container image will be deployed in kubernetes in the form of POd 
+
+<img src="pod.png">
+
 
 
