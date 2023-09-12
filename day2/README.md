@@ -41,3 +41,14 @@ ashutoshh [ ~ ]$ kubectl  version  -o json
     "gitCommit": "8dc49c4b984b897d423aab4971090e1879eb4f23",
     "gitTreeState": "clean",
 ```
+
+### checking nodes 
+
+```
+ashutoshh [ ~ ]$ kubectl    get  nodes
+NAME                                STATUS   ROLES   AGE   VERSION
+aks-agentpool-18505526-vmss000000   Ready    agent   79m   v1.26.6
+aks-agentpool-18505526-vmss000001   Ready    agent   79m   v1.26.6
+```
+
+
