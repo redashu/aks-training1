@@ -58,5 +58,27 @@ aks-agentpool-18505526-vmss000001   Ready    agent   79m   v1.26.6
 
 <img src="pod.png">
 
+### Deploy a pod manifest in AKS using kubectl 
+
+```
+ashutoshh [ ~ ]$ ls
+ashupod1.yaml  clouddrive
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ kubectl  get  pods
+No resources found in default namespace.
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ kubectl   create  -f  ashupod1.yaml  
+pod/ashupod-1 created
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ kubectl  get  pods
+NAME        READY   STATUS              RESTARTS   AGE
+ashupod-1   0/1     ContainerCreating   0          8s
+ashutoshh [ ~ ]$ kubectl  get  pods
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          22s
+ashutoshh [ ~ ]$ 
+
+```
+
 
 
