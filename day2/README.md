@@ -146,4 +146,64 @@ ashutoshh [ ~ ]$ kubectl  get pods
 No resources found in default namespace.
 ```
 
+### creating pod without manifest
+
+```
+ashutoshh [ ~ ]$ kubectl   run ashupod2   --image=dockerashu/ashu-webuiapp:version2  --port  80 
+pod/ashupod2 created
+ashutoshh [ ~ ]$ kubectl  get  pods
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          5m31s
+ashupod2    1/1     Running   0          4s
+ashutoshh [ ~ ]$ 
+```
+
+### more info about pod manifest
+
+```
+ashutoshh [ ~ ]$ kubectl   run ashupod2   --image=dockerashu/ashu-webuiapp:version2  --port  80  --dry-run=client 
+pod/ashupod2 created (dry run)
+ashutoshh [ ~ ]$ kubectl  get  pods
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          6m51s
+
+
+ashutoshh [ ~ ]$ kubectl   run ashupod2   --image=dockerashu/ashu-webuiapp:version2  --port  80  --dry-run=client  -o  yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ashupod2
+  name: ashupod2
+spec:
+  containers:
+  - image: dockerashu/ashu-webuiapp:version2
+    name: ashupod2
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+### storing in a file 
+
+```
+ashutoshh [ ~ ]$ kubectl   run ashupod2   --image=dockerashu/ashu-webuiapp:version2  --port  80  --dry-run=client  -o  yaml  >autopod.yaml
+ashutoshh [ ~ ]$ ls
+ashupod1.yaml  autopod.yaml  clouddrive
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ kubectl  create -f autopod.yaml 
+pod/ashupod2 created
+ashutoshh [ ~ ]$ 
+ashutoshh [ ~ ]$ kubectl  get pods
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          9m
+ashupod2    1/1     Running   0          5s
+ashutoshh [ ~ ]$ 
+```
+
+
 
