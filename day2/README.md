@@ -50,5 +50,9 @@ NAME                                STATUS   ROLES   AGE   VERSION
 aks-agentpool-18505526-vmss000000   Ready    agent   79m   v1.26.6
 aks-agentpool-18505526-vmss000001   Ready    agent   79m   v1.26.6
 ```
+### to deploy app (container images ) they must be present in some Registry 
+
+<img src="reg.png">
+
 
 
