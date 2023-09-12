@@ -1,0 +1,10 @@
+apiVersion: v1 # we are targeting apiServer version v1 of AKS control plane
+kind: Pod 
+metadata: # info about kind 
+  name: ashupod-1  # name of pod  
+spec: # info about your Resources like storage,container,ram,cpu etc
+  containers: # container info 
+  - name: ashuc1 
+    image: dockerashu/ashu-webuiapp:version2 # image from docker hub
+    ports: # port of app
+    - containerPort: 80 # port of app
