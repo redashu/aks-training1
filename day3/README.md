@@ -78,3 +78,16 @@ Annotations:      cni.projectcalico.org/containerID: 6a41c2760e675b05fec50abee74
                   cni.projectcalico.org/podIPs: 10.244.1.4/32
 ```
 
+### Load balancer as Internet facing entity 
+
+<img src="lb.png">
+
+### end user to k8s pod networking show 
+
+<img src="podnet111.png">
+
+### understanding it 
+
+<img src="finalnet.png">
+
+
