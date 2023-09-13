@@ -30,3 +30,20 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl delete -f newpod.yam
 pod "ashupodnew" deleted
 
 ```
+## Networking in k8s -- using AKS 
+
+<img src="aksnet.png">
+
+## AKS networking phase 1
+
+<img src="aksnet2.png">
+
+### for pod container communication in k8s we will choose CNI model 
+
+<img src="cni.png">
+
+### pod networking with and without cloud 
+
+<img src="cni2.png">
+
+
