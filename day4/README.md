@@ -200,3 +200,26 @@ kubernetes   ClusterIP      10.0.0.1      <none>           443/TCP          2d2h
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
 
 ```
+
+### chekcing ep in service 
+
+```
+ C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  svc                                                                                        NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)          AGE                                                                              ashu-lb1     LoadBalancer   10.0.50.112   20.204.240.187   1234:31069/TCP   11m                                                                              kubernetes   ClusterIP      10.0.0.1      <none>           443/TCP          2d2h                                                                             
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  endpoints
+NAME         ENDPOINTS                      AGE
+ashu-lb1     10.244.0.12:80,10.244.1.3:80   11m
+kubernetes   20.235.217.192:443             2d2h
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE                                NOMINATED NODE   READINESS GATES
+ashu-rc1-fr9cl   1/1     Running   0          90m   10.244.1.3    aks-agentpool-18505526-vmss000004   <none>           <none>
+ashu-rc1-svzk8   1/1     Running   0          75m   10.244.0.12   aks-agentpool-18505526-vmss000005   <none>           <none>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  endpoints  ashu-lb1
+NAME       ENDPOINTS                      AGE
+ashu-lb1   10.244.0.12:80,10.244.1.3:80   12m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+```
+
+
