@@ -183,4 +183,20 @@ status:
 
 ```
 
-### 
+### lets create service
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl create  -f   .\lbsvc.yaml   
+service/ashu-lb1 created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get service 
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+ashu-lb1     LoadBalancer   10.0.50.112   <pending>     1234:31069/TCP   6s
+kubernetes   ClusterIP      10.0.0.1      <none>        443/TCP          2d2h
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get service 
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)          AGE
+ashu-lb1     LoadBalancer   10.0.50.112   20.204.240.187   1234:31069/TCP   83s
+kubernetes   ClusterIP      10.0.0.1      <none>           443/TCP          2d2h
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+
+```
