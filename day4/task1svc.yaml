@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    x: hello
+  name: ashulb2
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 32009  # custom port in the range of 30000 32767 
+  selector:
+    x: hello
+  type: LoadBalancer
+status:
+  loadBalancer: {}
