@@ -290,3 +290,12 @@ NAME         ENDPOINTS                                     AGE
 ashu-lb1     10.244.0.14:80,10.244.1.10:80,10.244.1.9:80   16s
 kubernetes   20.235.217.192:443                            2d2h
 ```
+
+### creating service by exposing RC (it auto match label of pods to service selector)
+
+```
+ 103 kubectl  expose  rc  ashu-rc2  --type LoadBalancer  --port 80 --target-port 80 --name ashulb2 --dry-run=client  -o yaml  >task2svc.yaml
+ 104 kubectl create -f .\task2svc.yaml
+ 105 kubectl get  svc
+```
+
