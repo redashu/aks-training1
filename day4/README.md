@@ -299,3 +299,29 @@ kubernetes   20.235.217.192:443                            2d2h
  105 kubectl get  svc
 ```
 
+### RC -- RS -- problems
+
+<img src="rs.png">
+
+### stateless vs stateful
+<img src="sts.png">
+
+### listing api-resources in k8s 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl api-resources 
+NAME                              SHORTNAMES          APIVERSION                             NAMESPACED   KIND
+bindings                                              v1                                     true         Binding
+componentstatuses                 cs                  v1                                     false        ComponentStatus
+configmaps                        cm                  v1                                     true         ConfigMap
+endpoints                         ep                  v1                                     true         Endpoints
+events                            ev                  v1                                     true         Event
+limitranges                       limits              v1                                     true         LimitRange
+namespaces                        ns                  v1                                     false        Namespace
+nodes                             no                  v1                                     false        Node
+persistentvolumeclaims            pvc                 v1                                     true         PersistentVolumeClaim
+persistentvolumes                 pv                  v1                                     f
+```
+
+
+
