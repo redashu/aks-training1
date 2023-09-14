@@ -92,3 +92,67 @@ ashu-rc1-fr9cl   1/1     Running   0          2m47s   10.244.1.3    aks-agentpoo
 ashu-rc1-gsfm7   1/1     Running   0          32s     10.244.0.1
 ```
 
+### live change 
+
+```
+S C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl scale  rc  ashu-rc1   --replicas=5
+replicationcontroller/ashu-rc1 scaled
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   5         5         5       24m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  po
+NAME             READY   STATUS    RESTARTS   AGE
+ashu-rc1-dtlqb   1/1     Running   0          9m6s
+```
+
+## Introduction to service in k8s for creating Internal LB 
+
+<img src="lbs.png">
+
+### type fo service 
+
+<img src="svc.png">
+
+### nodeport vs  LB 
+
+<img src="svc1.png">
+
+### loadbalancer service in AKS 
+
+<img src="akslb.png">
+
+### creating service manifest file 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  service                                                                                 
+Create a service using a specified subcommand.                                                                                                               
+
+Aliases:
+service, svc
+
+Available Commands:
+  clusterip      Create a ClusterIP service
+  externalname   Create an ExternalName service
+  loadbalancer   Create a LoadBalancer service
+  nodeport       Create a NodePort service
+
+Usage:
+  kubectl create service [flags] [options]
+
+Use "kubectl create service <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  service   loadbalancer   ashu-lb1  --tcp 1234:80  --dry-run=client -o yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+```
+
+### store in a file
+
+```
+kubectl  create  service   loadbalancer   ashu-lb1  --tcp 1234:80  --dry-run=client -o yaml >lbsvc.yaml
+```
+
+### 
