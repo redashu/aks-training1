@@ -155,4 +155,32 @@ metadata:
 kubectl  create  service   loadbalancer   ashu-lb1  --tcp 1234:80  --dry-run=client -o yaml >lbsvc.yaml
 ```
 
+### understandign label concept in pod 
+
+<img src="label.png">
+
+### let me apply 
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-lb1
+  name: ashu-lb1 # name of SErvice --internal LB 
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234 # lb internal port which will be bouned with IP of lb 
+    protocol: TCP
+    targetPort: 80 # target app port where pod is running its app
+  selector: # pod finder using label of pod 
+    run: ashupodnew # this pod label 
+  type: LoadBalancer # type of service 
+status:
+  loadBalancer: {}
+
+```
+
 ### 
