@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ashu-rc2 # name of my RC 
+spec:
+  replicas: 1 # number of pod we want 
+  template: # pod info 
+    metadata:
+      labels: # will explain in networking section of pods 
+        x: hello # label of pods 
+    spec:
+      containers:
+      - image: dockerashu/ashu-webuiapp:version2
+        name: ashupodnew
+        ports:
+        - containerPort: 80
