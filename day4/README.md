@@ -221,5 +221,72 @@ NAME       ENDPOINTS                      AGE
 ashu-lb1   10.244.0.12:80,10.244.1.3:80   12m
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
 ```
+### new changes in RC 
+
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ashu-rc1 # name of my RC 
+spec:
+  replicas: 3 # number of pod we want 
+  template: # pod info 
+    metadata:
+      labels: # will explain in networking section of pods 
+        run: ashupodnew # label of pods 
+    spec:
+      containers:
+      - image: dockerashu/ashu-customer1:releasev1
+        name: ashupodnew
+        ports:
+        - containerPort: 80
+        env: # passing env 
+        - name: web # name of ENV 
+          value: myapp2  # value of env -- myapp1 , myapp2  , myapp3 
+
+```
 
 
+### changes in service yaml
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-lb1
+  name: ashu-lb1 # name of SErvice --internal LB 
+spec:
+  ports:
+  - name: 112-80
+    port: 80 # lb internal port which will be bouned with IP of lb 
+    protocol: TCP
+    targetPort: 80 # target app port where pod is running its app
+  selector: # pod finder using label of pod 
+    run: ashupodnew # this pod label 
+  type: LoadBalancer # type of service 
+status:
+  loadBalancer: {}
+
+```
+
+### deploy them all 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl replace -f   ashu-rc.yaml  -f  lbsvc.yaml  --force                                               
+replicationcontroller "ashu-rc1" deleted                                                                                                                     
+replicationcontroller/ashu-rc1 replaced                                                                                                                      
+service/ashu-lb1 replaced                                                                                                                                    
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   3         3         3       9s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get svc
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+ashu-lb1     LoadBalancer   10.0.30.255   20.219.203.138   80:31999/TCP   13s
+kubernetes   ClusterIP      10.0.0.1      <none>           443/TCP        2d2h
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get ep 
+NAME         ENDPOINTS                                     AGE
+ashu-lb1     10.244.0.14:80,10.244.1.10:80,10.244.1.9:80   16s
+kubernetes   20.235.217.192:443                            2d2h
+```
