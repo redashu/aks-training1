@@ -341,4 +341,21 @@ NAME            TYPE                             DATA   AGE
 ashu-reg-cred   kubernetes.io/dockerconfigjson   1      9s
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
 ```
+### after manifest update replace it
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl replace -f  .\acrimg_deploy.yaml  --force
+deployment.apps "ashu-dep1" deleted
+deployment.apps/ashu-dep1 replaced
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  deploy
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-dep1   1/1     1            1           7s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  po    
+NAME                         READY   STATUS    RESTARTS   AGE
+ashu-dep1-6574d9745d-69n5t   1/1     Running   0          11s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  secret
+NAME            TYPE                             DATA   AGE
+ashu-reg-cred   kubernetes.io/dockerconfigjson   1      11m
+```
 
