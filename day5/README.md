@@ -358,4 +358,12 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  secret
 NAME            TYPE                             DATA   AGE
 ashu-reg-cred   kubernetes.io/dockerconfigjson   1      11m
 ```
+### using secret understanding 
+
+<img src="usesec.png">
+
+### issue with multple customer apps in having LBs
+
+<img src="lbs.png">
+
 
