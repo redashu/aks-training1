@@ -1,0 +1,52 @@
+az group create --name myResourceGroup --location eastus
+
+az aks create \
+  --resource-group myResourceGroup \
+  --name myAKSCluster \
+  --node-count 2 \
+  --enable-addons monitoring \
+  --generate-ssh-keys
+
+
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+az aks scale --resource-group myResourceGroup --name myAKSCluster --node-count 3
+az aks nodepool list --resource-group myResourceGroup --cluster-name myAKSCluster
+
+az aks nodepool add --resource-group myResourceGroup --cluster-name myAKSCluster --name pool2 --node-count 3 --node-vm-size Standard_DS2_v2
+
+======
+# Create the resource group (if it doesn't exist)
+az group create --name myResourceGroup --location eastus
+
+# Create the AKS cluster with the Linux node pool
+az aks create \
+  --resource-group myResourceGroup \
+  --name myAKSCluster \
+  --node-count 3 \
+  --enable-addons monitoring \
+  --generate-ssh-keys \
+  --node-vm-size Standard_DS2_v2 \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 5 \
+  --os-type Linux
+
+=====
+
+# Add a Windows node pool
+az aks nodepool add \
+  --resource-group myResourceGroup \
+  --cluster-name myAKSCluster \
+  --name windows-pool \
+  --node-count 2 \
+  --os-type Windows \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 3 \
+  --node-vm-size Standard_D2s_v3
+
+### listing aks 
+
+az aks list --query "[].name" --output table
+az aks delete --name myAKSCluster --resource-group myResourceGroup --yes --no-wait
+
