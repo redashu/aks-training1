@@ -283,4 +283,22 @@ CURRENT   NAME                          CLUSTER         AUTHINFO                
 *         aks-ashutoshh                 aks-ashutoshh   clusterUser_aks-training_aks-ashutoshh   ashu-project
 ```
 
+### creating deployment manifest using ACR based image
+
+```
+kubectl  create  deployment  ashu-dep1 --image=aksashutoshh.azurecr.io/webapp:version1  --port 80   --dry-run=client -o yaml  >acrimg_deploy.yaml 
+```
+
+### deploy it 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  -f  .\acrimg_deploy.yaml 
+deployment.apps/ashu-dep1 created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  deployment  
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-dep1   0/1     1            0           5s
+```
+
+
 
