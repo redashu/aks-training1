@@ -149,4 +149,103 @@ ashulbnew    LoadBalancer   10.0.192.47   <pending>     80:31734/TCP   9s
 kubernetes   ClusterIP      10.0.0.1      <none>        443/TCP        20h
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
 ```
+### namespace in k8s 
 
+<img src="ns.png">
+
+### default list of ns in aks 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  namespaces
+NAME              STATUS   AGE
+calico-system     Active   3d1h
+default           Active   3d1h
+kube-node-lease   Active   3d1h
+kube-public       Active   3d1h
+kube-system       Active   3d1h
+tigera-operator   Active   3d1h
+```
+
+### creating custom namespaces
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl create  ns  ashu-project --dry-run=client -o yaml  >ns1.yaml                             
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest>                                                                                                  
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest>                                                                                                  
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl create -f ns1.yaml 
+namespace/ashu-project created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  ns
+NAME              STATUS   AGE
+ashu-project      Active   2s
+calico-system     Active   3d1h
+default           Active   3d1h
+kube-node-lease   Active   3d1h
+kube-public       Active   3d1h
+kube-system       Active   3d1h
+tigera-operator   Active   3d1h
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl create  ns  xyz-dbspace                                      
+namespace/xyz-dbspace created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  ns
+NAME              STATUS   AGE
+ashu-project      Active   29s
+calico-system     Active   3d1h
+default           Active   3d1h
+kube-node-lease   Active   3d1h
+kube-public       Active   3d1h
+kube-system       Active   3d1h
+```
+
+### to deploy resources in custom namespace there are two ways 
+
+### changing in yaml file
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: ashu-project # defining namespace 
+  creationTimestamp: null
+  labels:
+    app: ashu-webapp
+  name: ashu-webapp # name of my deployment 
+spec:
+  replicas: 1 # number of pods 
+  selector:
+    matchLabels:
+      app: ashu-webapp
+  strategy: {} # deployment can have multiple strategy 
+  template: # will be used to create pods 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-webapp
+    spec:
+      containers:
+      - image: dockerashu/ashu-webui-cloud4c:version35
+        name: ashu-webui-cloud4c
+        ports:
+        - containerPort: 80
+        resources: {} 
+status: {}
+
+```
+
+### lets do it
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  -f  .\ashu-deployment.yaml  -f  .\lbsvc.yaml  
+deployment.apps/ashu-webapp created                                                                                                                  
+service/ashu-lb1 created                                                                                                                             
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest>                                                                                                  
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  deploy                                                                              
+No resources found in default namespace.
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  deploy  -n ashu-project 
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-webapp   1/1     1            1           25s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl get  svc  -n ashu-project    
+NAME       TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
+ashu-lb1   LoadBalancer   10.0.174.31   20.207.74.14   80:30013/TCP   33s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+```
