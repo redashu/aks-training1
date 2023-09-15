@@ -300,5 +300,45 @@ NAME        READY   UP-TO-DATE   AVAILABLE   AGE
 ashu-dep1   0/1     1            0           5s
 ```
 
+### any private can not deployment in AKS 
 
+<img src="pr.png">
+
+### introduction to secret in k8s to store confidential details 
+
+<img src="sec.png">
+
+### creating secret manifest file 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  secret 
+Create a secret with specified type.
+
+ A docker-registry type secret is for accessing a container registry.
+
+ A generic type secret indicate an Opaque secret type.
+
+ A tls type secret holds TLS certificate and its associated key.
+
+Available Commands:
+  docker-registry   Create a secret for use with a Docker registry
+  generic           Create a secret from a local file, directory, or literal value
+  tls               Create a TLS secret
+```
+
+### creating it
+
+```
+kubectl  create  secret  docker-registry  ashu-reg-cred  --docker-server=aksashutoshh.azurecr.io --docker-username=aksashutoshh    --docker-password="aTgY32ZS2Ri2/8nH0W+ACRBWf0tI"  --dry-run=client -o yaml >acr_cred.yaml
+
+====>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  create  -f  .\acr_cred.yaml
+secret/ashu-reg-cred created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  secret 
+NAME            TYPE                             DATA   AGE
+ashu-reg-cred   kubernetes.io/dockerconfigjson   1      9s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+```
 
