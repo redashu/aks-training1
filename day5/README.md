@@ -249,3 +249,12 @@ NAME       TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
 ashu-lb1   LoadBalancer   10.0.174.31   20.207.74.14   80:30013/TCP   33s
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
 ```
+
+### checking it
+
+```
+S C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  delete   -f  .\ashu-deployment.yaml  -f  .\lbsvc.yaml  
+deployment.apps "ashu-webapp" deleted
+service "ashu-lb1" deleted
+```
+
