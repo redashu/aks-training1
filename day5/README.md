@@ -257,4 +257,30 @@ S C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  delete   -f  .\ashu-
 deployment.apps "ashu-webapp" deleted
 service "ashu-lb1" deleted
 ```
+### we can set custom namespace as default 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  ns                                                                                 
+NAME              STATUS   AGE                                                                                                                       
+ashu-project      Active   11m                                                                                                                       
+calico-system     Active   3d1h                                                                                                                      
+default           Active   3d1h
+kube-node-lease   Active   3d1h
+kube-public       Active   3d1h
+kube-system       Active   3d1h
+tigera-operator   Active   3d1h
+xyz-dbspace       Active   11m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  deploy
+No resources found in default namespace.
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  config set-context --current --namespace=ashu-project 
+Context "aks-ashutoshh" modified.
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  get  deploy
+No resources found in ashu-project namespace.
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest> kubectl  config get-contexts 
+CURRENT   NAME                          CLUSTER         AUTHINFO                                 NAMESPACE
+*         aks-ashutoshh                 aks-ashutoshh   clusterUser_aks-training_aks-ashutoshh   ashu-project
+```
+
 
