@@ -333,3 +333,104 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get
 NAME   ENDPOINTS         AGE
 dblb   10.244.0.4:3306   26m
 ```
+### creating webapp deployment 
+
+```
+kubectl create deployment  ashu-webapp --image=wordpress:6.2.1-apache --port 80    --dry-run=client -o yaml  >web_deploy.yaml 
+```
+
+### update webapp deployment yaml to connect Database pod 
+
+### creating envfile to store info 
+
+### dbconn.env 
+
+```
+WORDPRESS_DB_HOST=dblb
+WORDPRESS_DB_NAME=ashu-newdb
+```
+
+### creating configmap 
+
+```
+ C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create  configmap db-conn-cm --from-env-file=dbconn.env --dry-run=client  -o yaml  >dbconn.yaml                                                                                                                              
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\dbconn.yaml                                                 
+configmap/db-conn-cm created                                                                                                                         
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get cm 
+NAME               DATA   AGE
+ashu-db-details    1      43m
+db-conn-cm         2      4s
+kube-root-ca.crt   1      4d1h
+```
+
+### store connect secret env -- dbconn-cred.env
+
+```
+WORDPRESS_DB_USER=ashu
+WORDPRESS_DB_PASSWORD=Marlabs@098
+```
+
+### creating secret using above info 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create secret generic ashu-db-conn --from-env-file=dbconn-cred.env --dry-run=client -o yaml  >dbconn_secret.yaml                                                                                                             PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\dbconn_secret.yaml                                          secret/ashu-db-conn created                                                                                                                          
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl.exe  get  secret
+NAME             TYPE                             DATA   AGE
+ashu-db-conn     Opaque                           2      5s
+ashu-db-cred     Opaque                           2      109m
+ashu-reg-cred    kubernetes.io/dockerconfigjson   1      3d23h
+ashu-root-cred   Opaque                           1      124m
+```
+
+### finally updating CM & secret to the deployment manifest file
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-webapp
+  name: ashu-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashu-webapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashu-webapp
+    spec:
+      containers:
+      - image: wordpress:6.2.1-apache
+        name: wordpress
+        ports:
+        - containerPort: 80
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: db-conn-cm 
+        - secretRef:
+            name: ashu-db-conn 
+status: {}
+
+```
+
+### lets deploy it 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\web_deploy.yaml
+deployment.apps/ashu-webapp created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-db       1/1     1            1           48m
+ashu-webapp   0/1     1            0           6s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  pods 
+NAME                           READY   STATUS              RESTARTS   AGE
+ashu-db-f8645c785-bkgsp        1/1     Running             0          48m
+ashu-webapp-69f7775f6f-rmlxg   0/1     ContainerCreating   0          9s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+```
