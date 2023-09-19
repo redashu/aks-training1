@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-db
+  name: ashu-db # name of deployment 
+spec:
+  replicas: 1 # number of db pod 
+  selector:
+    matchLabels:
+      app: ashu-db
+  strategy: {}
+  template: # pod template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-db
+    spec:
+      containers:
+      - image: mysql:8.0 # image from docker hub 
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        envFrom: # for calling env and their values as well
+        - secretRef:
+            name: ashu-db-cred
+        env: # to call env variable to put some data
+        - name: MYSQL_DATABASE
+          valueFrom: # reading data from CM 
+            configMapKeyRef:
+              name: ashu-db-details
+              key: dbname  
+        - name: MYSQL_ROOT_PASSWORD # to set mysql admin password
+          valueFrom: # reading password from some where
+            secretKeyRef:
+              name:  ashu-root-cred # name of secret 
+              key:  pass1 # key of secret 
+status: {}
