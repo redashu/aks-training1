@@ -434,3 +434,46 @@ ashu-db-f8645c785-bkgsp        1/1     Running             0          48m
 ashu-webapp-69f7775f6f-rmlxg   0/1     ContainerCreating   0          9s
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
 ```
+
+### creating service for webapp
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  deploy                                                             NAME          READY   UP-TO-DATE   AVAILABLE   AGE                                                                                                   ashu-db       1/1     1            1           73m                                                                                                   ashu-webapp   1/1     1            1           25m                                                                                                   
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl expose deployment ashu-webapp --type LoadBalancer --port 80 --name ashulb   --dry-run=client -o yaml >svcweb.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\svcweb.yaml 
+service/ashulb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  svc
+NAME     TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   LoadBalancer   10.0.174.111   <pending>     80:32141/TCP   5s
+dblb     ClusterIP      10.0.126.7     <none>        3306/TCP       100m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+
+
+
+```
+
+### creating LB type service for webapp
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  deploy                                                             NAME          READY   UP-TO-DATE   AVAILABLE   AGE                                                                                                   ashu-db       1/1     1            1           73m                                                                                                   ashu-webapp   1/1     1            1           25m                                                                                                   
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl expose deployment ashu-webapp --type LoadBalancer --port 80 --name ashulb   --dry-run=client -o yaml >svcweb.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\svcweb.yaml 
+service/ashulb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  svc
+NAME     TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   LoadBalancer   10.0.174.111   <pending>     80:32141/TCP   5s
+dblb     ClusterIP      10.0.126.7     <none>        3306/TCP       100m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  svc
+NAME     TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   LoadBalancer   10.0.174.111   4.224.1.204   80:32141/TCP   51s
+dblb     ClusterIP      10.0.126.7     <none>        3306/TCP       101m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  svc
+NAME     TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   LoadBalancer   10.0.174.111   4.224.1.204   80:32141/TCP   85s
+dblb     ClusterIP      10.0.126.7     <none>        3306/TCP       102m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+```
+
+
