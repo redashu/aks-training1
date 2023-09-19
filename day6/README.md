@@ -163,4 +163,59 @@ ashu-db-cred     Opaque                           2      7s
 ashu-reg-cred    kubernetes.io/dockerconfigjson   1      3d21h
 ashu-root-cred   Opaque                           1      15m
 ```
+### final deployment manifest which is calling all the possible secrets
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-db
+  name: ashu-db # name of deployment 
+spec:
+  replicas: 1 # number of db pod 
+  selector:
+    matchLabels:
+      app: ashu-db
+  strategy: {}
+  template: # pod template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-db
+    spec:
+      containers:
+      - image: mysql:8.0 # image from docker hub 
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        envFrom: # for calling env and their values as well
+        - secretRef:
+            name: ashu-db-cred
+        env: # to call env variable to put some data
+        - name: MYSQL_DATABASE
+          value: ashu-newdb # this db will be created automatically 
+        - name: MYSQL_ROOT_PASSWORD # to set mysql admin password
+          valueFrom: # reading password from some where
+            secretKeyRef:
+              name:  ashu-root-cred # name of secret 
+              key:  pass1 # key of secret 
+status: {}
+```
+
+### lets deploy it 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\db_deployment.yaml
+deployment.apps/ashu-db created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  deploy 
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-db   1/1     1            1           47s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  pods
+NAME                      READY   STATUS    RESTARTS   AGE
+ashu-db-5bcdd76f4-zphmg   1/1     Running   0          51s
+```
+
 
