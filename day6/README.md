@@ -237,4 +237,99 @@ ashu-db-5bcdd76f4-zphmg   1/1     Running   0          29m   10.244.0.3   aks-ag
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
 ```
 
+## secret vs configmap in k8s
 
+<img src="cm.png">
+
+### creating configmap with key value options to store db name 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create configmap ashu-db-details --from-literal dbname=ashu-newdb --dry-run=client -o yaml
+apiVersion: v1
+data:
+  dbname: ashu-newdb
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: ashu-db-details
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create configmap ashu-db-details --from-literal dbname=ashu-newdb --dry-run=client -o yaml   >dbnamecm.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\dbnamecm.yaml 
+configmap/ashu-db-details created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get configmap 
+NAME               DATA   AGE
+ashu-db-details    1      8s
+kube-root-ca.crt   1      4d
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get cm        
+NAME               DATA   AGE
+ashu-db-details    1      12s
+kube-root-ca.crt   1      4d
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+
+```
+
+### updating deployment manifest with configmap calling 
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-db
+  name: ashu-db # name of deployment 
+spec:
+  replicas: 1 # number of db pod 
+  selector:
+    matchLabels:
+      app: ashu-db
+  strategy: {}
+  template: # pod template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-db
+    spec:
+      containers:
+      - image: mysql:8.0 # image from docker hub 
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        envFrom: # for calling env and their values as well
+        - secretRef:
+            name: ashu-db-cred
+        env: # to call env variable to put some data
+        - name: MYSQL_DATABASE
+          valueFrom: # reading data from CM 
+            configMapKeyRef:
+              name: ashu-db-details
+              key: dbname  
+        - name: MYSQL_ROOT_PASSWORD # to set mysql admin password
+          valueFrom: # reading password from some where
+            secretKeyRef:
+              name:  ashu-root-cred # name of secret 
+              key:  pass1 # key of secret 
+status: {}
+```
+
+### redeploy it 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl replace -f .\db_deployment.yaml --force
+deployment.apps "ashu-db" deleted
+deployment.apps/ashu-db replaced
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get deploy    
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-db   1/1     1            1           6s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get po    
+NAME                      READY   STATUS    RESTARTS   AGE
+ashu-db-f8645c785-bkgsp   1/1     Running   0          9s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get svc
+NAME   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+dblb   ClusterIP   10.0.126.7   <none>        3306/TCP   26m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get ep 
+NAME   ENDPOINTS         AGE
+dblb   10.244.0.4:3306   26m
+```
