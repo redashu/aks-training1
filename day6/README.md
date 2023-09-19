@@ -88,3 +88,79 @@ spec:
           value: ashu-newdb # this db will be created automatically 
 status: {}
 ```
+### to store database root cred we are going to secret 
+
+```
+kubectl create  secret generic ashu-root-cred --from-literal  pass1=Hellodb@123    --dry-run=client -o yaml 
+apiVersion: v1
+data:
+  pass1: SGVsbG9kYkAxMjM=
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ashu-root-cred
+```
+
+### store in file and send create request
+
+```
+S C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\secretroot.yaml 
+secret/ashu-root-cred created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get secret 
+NAME             TYPE                             DATA   AGE
+ashu-reg-cred    kubernetes.io/dockerconfigjson   1      3d21h
+ashu-root-cred   Opaque                           1      5s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+
+
+```
+
+### incase of multiple cred details better to use env file
+
+## db-cred.env
+
+```
+MYSQL_USER=ashu
+MYSQL_PASSWORD=Marlabs@098
+```
+
+### creating secret using above env file
+
+```
+kubectl create  secret generic ashu-db-cred --from-env-file=db-cred.env --dry-run=client -o yaml
+apiVersion: v1
+data:
+  MYSQL_PASSWORD: TWFybGFic0AwOTg=
+  MYSQL_USER: YXNodQ==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ashu-db-cred
+```
+
+### store this in a file  db-secret.yaml
+
+```
+apiVersion: v1
+data:
+  MYSQL_PASSWORD: TWFybGFic0AwOTg=
+  MYSQL_USER: YXNodQ==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ashu-db-cred
+```
+
+### creating secret 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f  .\db-secret.yaml
+secret/ashu-db-cred created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get secrets
+NAME             TYPE                             DATA   AGE
+ashu-db-cred     Opaque                           2      7s
+ashu-reg-cred    kubernetes.io/dockerconfigjson   1      3d21h
+ashu-root-cred   Opaque                           1      15m
+```
+
