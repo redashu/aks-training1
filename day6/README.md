@@ -217,5 +217,24 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get
 NAME                      READY   STATUS    RESTARTS   AGE
 ashu-db-5bcdd76f4-zphmg   1/1     Running   0          51s
 ```
+### creating clusterIP type service to only get Internal LB not external 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  deploy                                                             NAME      READY   UP-TO-DATE   AVAILABLE   AGE                                                                                                       ashu-db   1/1     1            1           27m                                                                                                       PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp>                                                                                 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl expose deployment ashu-db --type ClusterIP --port 3306 --name dblb --dry-run=client -o yaml  >dbsvc.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl create -f .\dbsvc.yaml  
+service/dblb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get  svc
+NAME   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+dblb   ClusterIP   10.0.126.7   <none>        3306/TCP   3s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get ep
+NAME   ENDPOINTS         AGE
+dblb   10.244.0.3:3306   22s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> kubectl get po -o wide
+NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE                                NOMINATED NODE   READINESS GATES
+ashu-db-5bcdd76f4-zphmg   1/1     Running   0          29m   10.244.0.3   aks-agentpool-18505526-vmss000008   <none>           <none>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\ashu-two-tierapp> 
+```
 
 
