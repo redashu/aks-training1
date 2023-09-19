@@ -21,3 +21,70 @@ PS C:\Users\humanfirmware> kubectl config get-contexts
 CURRENT   NAME                          CLUSTER         AUTHINFO                                 NAMESPACE
 *         aks-ashutoshh                 aks-ashutoshh   clusterUser_aks-training_aks-ashutoshh   ashu-project
 ```
+
+## Deploying two tier webapp
+
+### creating mysql db deployment manifest
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-db
+  name: ashu-db # name of deployment 
+spec:
+  replicas: 1 # number of db pod 
+  selector:
+    matchLabels:
+      app: ashu-db
+  strategy: {}
+  template: # pod template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-db
+    spec:
+      containers:
+      - image: mysql:8.0 # image from docker hub 
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+status: {}
+```
+
+### updating ENV section 
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-db
+  name: ashu-db # name of deployment 
+spec:
+  replicas: 1 # number of db pod 
+  selector:
+    matchLabels:
+      app: ashu-db
+  strategy: {}
+  template: # pod template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashu-db
+    spec:
+      containers:
+      - image: mysql:8.0 # image from docker hub 
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        env: # to call env variable to put some data
+        - name: MYSQL_DATABASE
+          value: ashu-newdb # this db will be created automatically 
+status: {}
+```
