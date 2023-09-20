@@ -446,6 +446,41 @@ deployment.apps/ashu-ingress-controller-ingress-nginx-controller   1/1     1    
 NAME                                                                          DESIRED   CURRENT   READY   AGE
 replicaset.apps/ashu-ingress-controller-ingress-nginx-controller-7f495f454c   1         1         1       81s
 ```
+### Creating app routing rule 
+
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ashu-app-routing-rule
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx # nginx class name 
+  rules:
+  - host: ashu.adhocnet.org #  you can write  yourname.delvex.io or yourname.adhocnet.org 
+    http:
+      paths:
+      - path: /  # home page of app 
+        pathType: Prefix
+        backend:
+          service:
+            name: weblb # name of webapp service 
+            port:
+              number: 80 # port of webapp service 
+```
+
+### ingress routing deployed
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  create -f .\ingress-app-route.yaml
+ingress.networking.k8s.io/ashu-app-routing-rule created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get ingress
+NAME                    CLASS   HOSTS               ADDRESS   PORTS   AGE
+ashu-app-routing-rule   nginx   ashu.adhocnet.org             80      5s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+```
+
 
 
 
