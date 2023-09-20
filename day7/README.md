@@ -366,3 +366,30 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
 
 
 ```
+
+### accessing sidecar contaienr to check realtime database updates
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  exec -it  ashudb-68656bb49-c562r  -- sh 
+Defaulted container "ashuc1" out of: ashuc1, mysql
+/ #
+/ # 
+/ # cd  /mnt/data/
+/mnt/data # ls
+#ib_16384_0.dblwr   auto.cnf            binlog.index        client-key.pem      mysql               private_key.pem     sys
+#ib_16384_1.dblwr   binlog.000001       ca-key.pem          ib_buffer_pool      mysql.ibd           public_key.pem      undo_001
+#innodb_redo        binlog.000002       ca.pem              ibdata1             mysql.sock          server-cert.pem     undo_002
+#innodb_temp        binlog.000003       client-cert.pem     ibtmp1              performance_schema  server-key.pem
+/mnt/data # ls
+#ib_16384_0.dblwr   ashu@002ddbnew      binlog.000003       client-cert.pem     ibtmp1              performance_schema  server-key.pem
+#ib_16384_1.dblwr   auto.cnf            binlog.index        client-key.pem      mysql               private_key.pem     sys
+#innodb_redo        binlog.000001       ca-key.pem          ib_buffer_pool      mysql.ibd           public_key.pem      undo_001
+#innodb_temp        binlog.000002       ca.pem              ibdata1             mysql.sock          server-cert.pem     undo_002
+/mnt/data # ls
+#ib_16384_0.dblwr   ashu@002ddbnew      binlog.000003       client-cert.pem     ibdata1             mysql.sock          server-cert.pem     undo_002
+#ib_16384_1.dblwr   auto.cnf            binlog.index        client-key.pem      ibtmp1              performance_schema  server-key.pem
+#innodb_redo        binlog.000001       ca-key.pem          hellomarlabs        mysql               private_key.pem     sys
+#innodb_temp        binlog.000002       ca.pem              ib_buffer_pool      mysql.ibd           public_key.pem      undo_001
+/mnt/data #
+
+```
