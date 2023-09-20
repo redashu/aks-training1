@@ -227,3 +227,76 @@ spec:
 status: {}
 
 ```
+
+### deploy it
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  create -f .\db_deploy.yaml                                                 deployment.apps/ashudb created                                                                                                             PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>                                                                                PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl.exe  get  pod
+NAME                      READY   STATUS    RESTARTS   AGE
+ashudb-7d78fbd578-t7ckt   1/1     Running   0          4s
+```
+
+### adding another container
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # pod template
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      volumes: 
+      - name: ashu-dbvol
+        hostPath:  # is for defining storage options in nodes 
+          path: /ashu/data
+          type: DirectoryOrCreate 
+      containers:
+      - image: alpine 
+        name: ashuc1 
+        command: ['sh','-c','sleep 10000'] 
+        volumeMounts: 
+        - name: ashu-dbvol 
+          mountPath: /mnt/data
+          readOnly: True 
+      - image: mysql:8.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts: # mounting volume created above 
+        - name: ashu-dbvol 
+          mountPath: /var/lib/mysql/ # default mysql db location 
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: RedDb@1234
+status: {}
+
+```
+
+### deploy it
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl replace -f .\db_deploy.yaml
+deployment.apps/ashudb replaced
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  pod
+NAME                     READY   STATUS    RESTARTS   AGE
+ashudb-68656bb49-c562r   2/2     Running   0          35s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl.exe  get  deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           8m12s
+```
+
+
