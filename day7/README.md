@@ -1,4 +1,4 @@
-### Training plan 
+### Revision 
 
-<img src="plan.png">
+<img src="rev.png">
 
