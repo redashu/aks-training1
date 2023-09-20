@@ -393,3 +393,60 @@ Defaulted container "ashuc1" out of: ashuc1, mysql
 /mnt/data #
 
 ```
+
+### adding Ingress controller in webUI access -- so we remove LB type service and  created ClusterIP type service -- Internal Lb 
+
+```
+S C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl create -f .\websvc1.yaml
+service/weblb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  svc
+NAME    TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+dblb1   ClusterIP   10.0.29.223   <none>        3306/TCP   59m
+weblb   ClusterIP   10.0.85.80    <none>        80/TCP     4s
+```
+
+## Introduction to helm the K8s packagemanager 
+
+<img src="pkg.png">
+
+### installing nginx ingress controller using helm 
+
+```
+
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> $Namespace = 'ingress-nginx'
+
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> helm repo ls  
+NAME            URL
+ingress-nginx   https://kubernetes.github.io/ingress-nginx
+
+```
+### final deployment of ingress controller in AKS 
+
+```
+helm install ashu-ingress-controller ingress-nginx/ingress-nginx  --create-namespace --namespace $Namespace --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
+```
+
+### lets verify 
+
+```
+kubectl  get  all  -n ingress-nginx 
+NAME                                                                  READY   STATUS    RESTARTS   AGE
+pod/ashu-ingress-controller-ingress-nginx-controller-7f495f4548mzvr   1/1     Running   0          81s
+
+NAME                                                                 TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+service/ashu-ingress-controller-ingress-nginx-controller             LoadBalancer   10.0.209.24    4.224.73.73   80:31981/TCP,443:31982/TCP   81s
+service/ashu-ingress-controller-ingress-nginx-controller-admission   ClusterIP      10.0.204.107   <none>        443/TCP                      81s
+
+NAME                                                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ashu-ingress-controller-ingress-nginx-controller   1/1     1            1           81s
+
+NAME                                                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/ashu-ingress-controller-ingress-nginx-controller-7f495f454c   1         1         1       81s
+```
+
+
+
+
