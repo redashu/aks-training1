@@ -180,3 +180,50 @@ bash-4.4# exit
 exit
 PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
 ```
+
+### understanding usage of multi container pod 
+
+<img src="mc.png">
+
+### demo of deployment with single volume and single container 
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # pod template
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      volumes: 
+      - name: ashu-dbvol
+        hostPath:  # is for defining storage options in nodes 
+          path: /ashu/data
+          type: DirectoryOrCreate 
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts: # mounting volume created above 
+        - name: ashu-dbvol 
+          mountPath: /var/lib/mysql/ # default mysql db location 
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: RedDb@1234
+status: {}
+
+```
