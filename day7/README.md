@@ -495,6 +495,10 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
 
 ```
 
+### PV and pvc 
+
+<img src="pv.png">
+
 
 
 
