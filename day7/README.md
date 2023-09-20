@@ -299,4 +299,70 @@ NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 ashudb   1/1     1            1           8m12s
 ```
 
+### creating clusterIP type service for DB pod 
 
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl.exe   get  deploy                                                           
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE                                                                                                        
+ashudb   1/1     1            1           11m                                                                                                        
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>                                                                                     
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl expose deploy  ashudb --type ClusterIP --port 3306 --name dblb1 --dry-run=client  -o yaml >dbsvc.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl create -f .\dbsvc.yaml
+service/dblb1 created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get svc
+NAME    TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+dblb1   ClusterIP   10.0.29.223   <none>        3306/TCP   11s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get ep 
+NAME    ENDPOINTS         AGE
+dblb1   10.244.2.9:3306   17s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+
+```
+
+### creating web app 
+
+<img src="web.png">
+
+### creating it
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  create  deployment  ashu-webapp --image=adminer  --port 8080 --dry-run=client -o yaml >web_deploy.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl create -f .\web_deploy.yaml
+deployment.apps/ashu-webapp created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-webapp   0/1     1            0           5s
+ashudb        1/1     1            1           17m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  po    
+NAME                           READY   STATUS              RESTARTS   AGE
+ashu-webapp-6ccf6f7765-ptqkt   0/1     ContainerCreating   0          9s
+ashudb-68656bb49-c562r         2/2     Running             0          9m52s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  po
+NAME                           READY   STATUS    RESTARTS   AGE
+ashu-webapp-6ccf6f7765-ptqkt   1/1     Running   0          14s
+ashudb-68656bb49-c562r         2/2     Running   0          9m57s
+```
+
+### exposing webapp with Loadbalancer type service
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-webapp   1/1     1            1           4m6s
+ashudb        1/1     1            1           21m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  expose  deployment  ashu-webapp --type LoadBalancer --port 8080 --name ashu-weblb --dry-run=client  -o yaml   >websvc.yaml 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  create -f .\websvc.yaml
+service/ashu-weblb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  svc
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+ashu-weblb   LoadBalancer   10.0.45.250   <pending>     8080:30019/TCP   5s
+dblb1        ClusterIP      10.0.29.223   <none>        3306/TCP         9m26s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+
+
+```
