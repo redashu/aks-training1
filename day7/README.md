@@ -482,6 +482,19 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
 ```
 
 
+## incase you want to uninstall ingress 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> helm list --namespace ingress-nginx 
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+ashu-ingress-controller ingress-nginx   1               2023-09-20 13:39:39.8836359 +0530 IST   deployed        ingress-nginx-4.7.2     1.8.2      
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> helm uninstall  ashu-ingress-controller  --namespace ingress-nginx 
+release "ashu-ingress-controller" uninstalled
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+
+```
+
 
 
 
