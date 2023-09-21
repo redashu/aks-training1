@@ -187,5 +187,139 @@ pvc-abef8d06-2446-4f40-a1f8-2767011c3c3b   10Gi       RWO            Retain     
 
 <img src="sc1.png">
 
+## HPA deployment -- Horizental pod autoscaller 
+
+### creating deployment 
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-web
+  name: ashu-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashu-web
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashu-web
+    spec:
+      containers:
+      - image: dockerashu/ashu-webui-cloud4c:version35
+        name: ashu-webui-cloud4c
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}
+```
+
+### HPA usage metric server to read pod resource consumption and AKS is having it default
+
+```
+PS C:\Users\humanfirmware> kubectl  get  po  -n kube-system
+NAME                                  READY   STATUS    RESTARTS   AGE
+ama-logs-f8mlx                        3/3     Running   0          140m
+ama-logs-q8jzs                        3/3     Running   0          140m
+ama-logs-rs-769cdf78d7-nl4xr          2/2     Running   0          3h34m
+ama-metrics-54f59d4b7c-7w6d6          2/2     Running   0          140m
+ama-metrics-ksm-9fcd9bbf4-fxwm6       1/1     Running   0          140m
+ama-metrics-node-c8j8q                2/2     Running   0          140m
+ama-metrics-node-tlr82                2/2     Running   0          140m
+cloud-node-manager-glsph              1/1     Running   0          140m
+cloud-node-manager-p27nt              1/1     Running   0          140m
+coredns-76b9877f49-kgm9v              1/1     Running   0          3h34m
+coredns-76b9877f49-mzh8v              1/1     Running   0          3h34m
+coredns-autoscaler-85f7d6b75d-mbzbp   1/1     Running   0          3h34m
+csi-azuredisk-node-lrprf              3/3     Running   0          140m
+csi-azuredisk-node-qljvp              3/3     Running   0          140m
+csi-azurefile-node-57ghr              3/3     Running   0          140m
+csi-azurefile-node-rxqrq              3/3     Running   0          140m
+konnectivity-agent-7b9b474ff5-n6n9n   1/1     Running   0          3h34m
+konnectivity-agent-7b9b474ff5-pkbcg   1/1     Running   0          3h34m
+kube-proxy-dbbfs                      1/1     Running   0          140m
+kube-proxy-wjrkf                      1/1     Running   0          140m
+metrics-server-555d76c778-46fch       2/2     Running   0          3h34m
+metrics-server-555d76c778-rmvlw       2/2     Running   0          3h34m
+```
+
+### updating deployment manifest file
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashu-web
+  name: ashu-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashu-web
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashu-web
+    spec:
+      containers:
+      - image: dockerashu/ashu-webui-cloud4c:version35
+        name: ashu-webui-cloud4c
+        ports:
+        - containerPort: 80
+        resources:  # no limit in pod container 
+          requests:
+            memory: 50M
+            cpu: 10m # 1 vcpu == 1000 m (milicore)
+          limits:
+            memory: 600M 
+            cpu: 300m # 30% of 1vcpu -- that virtual cpu core 
+status: {}
+```
+
+### deploy it 
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl create -f .\deployment.yaml
+deployment.apps/ashu-web created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl.exe get  deploy                                                                               
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE                                                                                                                     
+ashu-web   0/1     1            0           7s                                                                                                                      
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl.exe get  po                                                                                   
+NAME                        READY   STATUS    RESTARTS   AGE
+ashu-web-587dc98f7d-sn5jj   1/1     Running   0          11s
+```
+
+### creating cluster IP type service
+
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl create -f .\deployment.yaml
+deployment.apps/ashu-web created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl.exe get  deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-web   0/1     1            0           7s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl.exe get  po
+NAME                        READY   STATUS    RESTARTS   AGE
+ashu-web-587dc98f7d-sn5jj   1/1     Running   0          11s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl  expose deployment  ashu-web --type ClusterIP --port 80 --name lbweb 
+service/lbweb exposed
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl get  svc
+NAME    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+lbweb   ClusterIP   10.0.216.147   <none>        80/TCP    7s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl get  ep 
+NAME    ENDPOINTS        AGE
+lbweb   10.244.1.12:80   12s
+```
+
 
 
