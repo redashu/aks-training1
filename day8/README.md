@@ -321,5 +321,116 @@ NAME    ENDPOINTS        AGE
 lbweb   10.244.1.12:80   12s
 ```
 
+### deploy HPA rule in deployment pod 
 
+```
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl get deploy 
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashu-web   1/1     1            1           25m
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl  autoscale  deployment  ashu-web --cpu-percent 10 --max 10 --min 2 
+horizontalpodautoscaler.autoscaling/ashu-web autoscaled
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> kubectl  get  hpa
+NAME       REFERENCE             TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+ashu-web   Deployment/ashu-web   <unknown>/10%   2         10        0          5s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\final_day> 
+
+```
+
+## Helm 
+
+### checking list of repo in you k8s client machine 
+
+```
+PS C:\Users\humanfirmware> helm  repo list
+NAME            URL
+ingress-nginx   https://kubernetes.github.io/ingress-nginx
+PS C:\Users\humanfirmware>
+
+```
+
+### adding a new repo 
+
+```
+PS C:\Users\humanfirmware> helm repo add  ashu-repo   https://prometheus-community.github.io/helm-charts
+"ashu-repo" has been added to your repositories
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> helm  repo list
+NAME            URL
+ingress-nginx   https://kubernetes.github.io/ingress-nginx
+ashu-repo       https://prometheus-community.github.io/helm-charts
+PS C:\Users\humanfirmware>
+
+
+```
+
+### its a good way to always keep your repo updated
+
+```
+PS C:\Users\humanfirmware> helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "ingress-nginx" chart repository
+...Successfully got an update from the "ashu-repo" chart repository
+Update Complete. ⎈Happy Helming!⎈
+```
+
+### installing prometheus and grafan using helm 
+
+```
+PS C:\Users\humanfirmware> helm repo list
+NAME            URL
+ingress-nginx   https://kubernetes.github.io/ingress-nginx
+ashu-repo       https://prometheus-community.github.io/helm-charts
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> helm  search repo  kube
+NAME                                    CHART VERSION   APP VERSION     DESCRIPTION
+ashu-repo/kube-prometheus-stack         51.0.3          v0.68.0         kube-prometheus-stack collects Kubernetes manif...
+ashu-repo/kube-state-metrics            5.13.0          2.10.0          Install kube-state-metrics to generate and expo...
+ashu-repo/jiralert                      1.6.0           v1.3.0          A Helm chart for Kubernetes to install jiralert
+ashu-repo/prometheus                    2.0.4                           A Prometheus Helm chart for Kubernetes. Prometh...
+ashu-repo/prometheus-operator           9.3.1           0.38.1          Provides easy monitoring definitions for Kubern...
+ashu-repo/prometheus-smartctl-exporter  0.6.0           v0.11.0         A Helm chart for Kubernetes
+ingress-nginx/ingress-nginx             4.7.2           1.8.2           Ingress controller for Kubernetes using NGINX a...
+ashu-repo/prometheus-druid-exporter     1.1.0           v0.11.0         Druid exporter to monitor druid metrics with Pr...
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> helm install ashu-monitoring   ashu-repo/kube-prometheus-stack  -n watch-apps
+
+```
+
+### checking status
+
+```
+PS C:\Users\humanfirmware> helm install ashu-monitoring   ashu-repo/kube-prometheus-stack  -n watch-apps
+NAME: ashu-monitoring
+LAST DEPLOYED: Thu Sep 21 13:54:31 2023
+NAMESPACE: watch-apps
+STATUS: deployed
+REVISION: 1
+NOTES:
+kube-prometheus-stack has been installed. Check its status by running:
+  kubectl --namespace watch-apps get pods -l "release=ashu-monitoring"
+
+Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+
+====>
+
+PS C:\Users\humanfirmware> helm list -n watch-apps
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+ashu-monitoring watch-apps      1               2023-09-21 13:54:31.0466457 +0530 IST   deployed        kube-prometheus-stack-51.0.3    v0.68.0
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+```
+
+### verify it using kubectl also 
+
+```
+
+
+```
 
