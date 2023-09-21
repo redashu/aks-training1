@@ -183,5 +183,9 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 pvc-abef8d06-2446-4f40-a1f8-2767011c3c3b   10Gi       RWO            Retain           Bound    ashu-project/ashu-db-diskpvc   ashu-azure-storageclass            59s
 ```
 
+### Explanation of above storage class 
+
+<img src="sc1.png">
+
 
 
