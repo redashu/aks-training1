@@ -16,3 +16,11 @@
 
 <img src="finalrev.png">
 
+### understanding pv and pvc concept 
+
+<img src="pv.png">
+
+### AKS with storageclass 
+
+<img src="sc.png">
+
