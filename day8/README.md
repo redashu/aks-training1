@@ -431,6 +431,126 @@ PS C:\Users\humanfirmware>
 
 ```
 
+PS C:\Users\humanfirmware> kubectl  get  all -n watch-apps
+NAME                                                         READY   STATUS    RESTARTS   AGE
+pod/alertmanager-ashu-monitoring-kube-prome-alertmanager-0   2/2     Running   0          2m6s
+pod/ashu-monitoring-grafana-68445dfbcc-4pfdg                 3/3     Running   0          2m21s
+pod/ashu-monitoring-kube-prome-operator-56cdc9c789-4kfm2     1/1     Running   0          2m21s
+pod/ashu-monitoring-kube-state-metrics-577964cbc-847cp       1/1     Running   0          2m21s
+pod/ashu-monitoring-prometheus-node-exporter-528fl           1/1     Running   0          2m21s
+pod/ashu-monitoring-prometheus-node-exporter-8klcg           1/1     Running   0          2m21s
+pod/prometheus-ashu-monitoring-kube-prome-prometheus-0       2/2     Running   0          2m6s
 
+NAME                                               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+service/alertmanager-operated                      ClusterIP   None           <none>        9093/TCP,9094/TCP,9094/UDP   2m6s
+service/ashu-monitoring-grafana                    ClusterIP   10.0.253.43    <none>        80/TCP                       2m21s
+service/ashu-monitoring-kube-prome-alertmanager    ClusterIP   10.0.208.166   <none>        9093/TCP,8080/TCP            2m21s
+service/ashu-monitoring-kube-prome-operator        ClusterIP   10.0.13.98     <none>        443/TCP                      2m21s
+service/ashu-monitoring-kube-prome-prometheus      ClusterIP   10.0.219.224   <none>        9090/TCP,8080/TCP            2m21s
+service/ashu-monitoring-kube-state-metrics         ClusterIP   10.0.198.59    <none>        8080/TCP                     2m21s
+service/ashu-monitoring-prometheus-node-exporter   ClusterIP   10.0.245.188   <none>        9100/TCP                     2m21s
+service/prometheus-operated                        ClusterIP   None           <none>        9090/TCP                     2m6s
+
+NAME                                                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/ashu-monitoring-prometheus-node-exporter   2         2         2       2            2           kubernetes.io/os=linux   2m21s
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ashu-monitoring-grafana               1/1     1            1           2m21s
+deployment.apps/ashu-monitoring-kube-prome-operator   1/1     1            1           2m21s
+deployment.apps/ashu-monitoring-kube-state-metrics    1/1     1            1           2m21s
+
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/ashu-monitoring-grafana-68445dfbcc               1         1         1       2m21s
+replicaset.apps/ashu-monitoring-kube-prome-operator-56cdc9c789   1         1         1       2m21s
+replicaset.apps/ashu-monitoring-kube-state-metrics-577964cbc     1         1         1       2m21s
+
+NAME                                                                    READY   AGE
+statefulset.apps/alertmanager-ashu-monitoring-kube-prome-alertmanager   1/1     2m6s
+statefulset.apps/prometheus-ashu-monitoring-kube-prome-prometheus       1/1     2m6s
+PS C:\Users\humanfirmware>
+```
+
+### For kubernetes client there is port-forward option 
+
+```
+PS C:\Users\humanfirmware> kubectl  get  svc -n watch-apps
+NAME                                       TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+alertmanager-operated                      ClusterIP   None           <none>        9093/TCP,9094/TCP,9094/UDP   5m13s
+ashu-monitoring-grafana                    ClusterIP   10.0.253.43    <none>        80/TCP                       5m28s
+ashu-monitoring-kube-prome-alertmanager    ClusterIP   10.0.208.166   <none>        9093/TCP,8080/TCP            5m28s
+ashu-monitoring-kube-prome-operator        ClusterIP   10.0.13.98     <none>        443/TCP                      5m28s
+ashu-monitoring-kube-prome-prometheus      ClusterIP   10.0.219.224   <none>        9090/TCP,8080/TCP            5m28s
+ashu-monitoring-kube-state-metrics         ClusterIP   10.0.198.59    <none>        8080/TCP                     5m28s
+ashu-monitoring-prometheus-node-exporter   ClusterIP   10.0.245.188   <none>        9100/TCP                     5m28s
+prometheus-operated                        ClusterIP   None           <none>        9090/TCP                     5m13s
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> kubectl -n watch-apps  port-forward   svc/ashu-monitoring-kube-prome-prometheus  1234:9090
+Forwarding from 127.0.0.1:1234 -> 9090
+Forwarding from [::1]:1234 -> 9090
+```
+
+### accessing Visualization engine tool grafana 
+
+```
+PS C:\Users\humanfirmware> kubectl  get  svc -n watch-apps
+NAME                                       TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+alertmanager-operated                      ClusterIP   None           <none>        9093/TCP,9094/TCP,9094/UDP   16m
+ashu-monitoring-grafana                    ClusterIP   10.0.253.43    <none>        80/TCP                       16m
+ashu-monitoring-kube-prome-alertmanager    ClusterIP   10.0.208.166   <none>        9093/TCP,8080/TCP            16m
+ashu-monitoring-kube-prome-operator        ClusterIP   10.0.13.98     <none>        443/TCP                      16m
+ashu-monitoring-kube-prome-prometheus      ClusterIP   10.0.219.224   <none>        9090/TCP,8080/TCP            16m
+ashu-monitoring-kube-state-metrics         ClusterIP   10.0.198.59    <none>        8080/TCP                     16m
+ashu-monitoring-prometheus-node-exporter   ClusterIP   10.0.245.188   <none>        9100/TCP                     16m
+prometheus-operated                        ClusterIP   None           <none>        9090/TCP                     16m
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> kubectl -n watch-apps  port-forward  svc/ashu-monitoring-grafana  1233:80
+Forwarding from 127.0.0.1:1233 -> 3000
+Forwarding from [::1]:1233 -> 3000
+
+```
+
+### getting the user and password of grafana
+
+```
+PS C:\Users\humanfirmware> kubectl get  secrets -n watch-apps
+NAME                                                                TYPE                 DATA   AGE
+alertmanager-ashu-monitoring-kube-prome-alertmanager                Opaque               1      20m
+alertmanager-ashu-monitoring-kube-prome-alertmanager-generated      Opaque               1      19m
+alertmanager-ashu-monitoring-kube-prome-alertmanager-tls-assets-0   Opaque               0      19m
+alertmanager-ashu-monitoring-kube-prome-alertmanager-web-config     Opaque               1      19m
+ashu-monitoring-grafana                                             Opaque               3      20m
+ashu-monitoring-kube-prome-admission                                Opaque               3      20m
+prometheus-ashu-monitoring-kube-prome-prometheus                    Opaque               1      19m
+prometheus-ashu-monitoring-kube-prome-prometheus-tls-assets-0       Opaque               1      19m
+prometheus-ashu-monitoring-kube-prome-prometheus-web-config         Opaque               1      19m
+sh.helm.release.v1.ashu-monitoring.v1                               helm.sh/release.v1   1      20m
+PS C:\Users\humanfirmware> kubectl  describe  secret  ashu-monitoring-grafana  -n watch-apps
+Name:         ashu-monitoring-grafana
+Namespace:    watch-apps
+Labels:       app.kubernetes.io/instance=ashu-monitoring
+              app.kubernetes.io/managed-by=Helm
+              app.kubernetes.io/name=grafana
+              app.kubernetes.io/version=10.1.1
+              helm.sh/chart=grafana-6.59.4
+Annotations:  meta.helm.sh/release-name: ashu-monitoring
+              meta.helm.sh/release-namespace: watch-apps
+
+Type:  Opaque
+
+Data
+====
+ldap-toml:       0 bytes
+admin-password:  13 bytes
+admin-user:      5 bytes
+PS C:\Users\humanfirmware>
+PS C:\Users\humanfirmware> kubectl get  secrets   ashu-monitoring-grafana -n watch-apps  -o  jsonpath='{.data.admin-user}'
+YWRtaW4=
+PS C:\Users\humanfirmware> kubectl get  secrets   ashu-monitoring-grafana -n watch-apps  -o  jsonpath='{.data.admin-password}'
+cHJvbS1vcGVyYXRvcg==
+PS C:\Users\humanfirmware>
 ```
 
