@@ -102,4 +102,86 @@ PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
 
 ```
 
+### creating Deployment and using pvc as volume 
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # pod template
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      volumes: 
+      - name: ashu-dbvol
+        persistentVolumeClaim:  # calling pvc which we created 
+          claimName: ashu-db-diskpvc # name of already created PVC 
+      containers:
+      - image: alpine 
+        name: ashuc1 
+        command: ['sh','-c','sleep 10000'] 
+        volumeMounts: 
+        - name: ashu-dbvol 
+          mountPath: /mnt/data
+          readOnly: True 
+      - image: mysql:8.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts: # mounting volume created above 
+        - name: ashu-dbvol 
+          mountPath: /var/lib/mysql/ # default mysql db location 
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: RedDb@1234
+status: {}
+
+```
+
+### creating it ...
+
+```
+
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  create -f .\mystorage_class.yaml  
+storageclass.storage.k8s.io/ashu-azure-storageclass created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl create -f .\db_deploy.yaml 
+deployment.apps/ashudb created
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl.exe  get  deploy                                            NAME     READY   UP-TO-DATE   AVAILABLE   AGE                                                                                        ashudb   0/1     1            0           4s                                                                                         PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  get  po                                                    
+NAME                      READY   STATUS              RESTARTS   AGE
+ashudb-7b6cc6656b-s5jrg   0/2     ContainerCreating   0          11s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  get  po
+NAME                      READY   STATUS              RESTARTS   AGE
+ashudb-7b6cc6656b-s5jrg   0/2     ContainerCreating   0          16s
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl  get  po
+NAME                      READY   STATUS    RESTARTS   AGE
+ashudb-7b6cc6656b-s5jrg   2/2     Running   0          27s
+=========>>
+
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  pvc
+NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS              AGE
+ashu-db-diskpvc   Bound    pvc-abef8d06-2446-4f40-a1f8-2767011c3c3b   10Gi       RWO            ashu-azure-storageclass   8m35s      
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps>
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> 
+PS C:\Users\humanfirmware\Desktop\my-yaml-manifest\storage-apps> kubectl get  pv 
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                          STORAGECLASS              REASON   AGE
+pvc-abef8d06-2446-4f40-a1f8-2767011c3c3b   10Gi       RWO            Retain           Bound    ashu-project/ashu-db-diskpvc   ashu-azure-storageclass            59s
+```
+
+
 
